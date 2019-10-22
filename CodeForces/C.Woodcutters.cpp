@@ -45,45 +45,42 @@ using namespace __gnu_pbds;
 /*max_element(all(m),
     [](const ii& p1, const ii& p2) {
         return p1.second < p2.second; });*/
-int n;
-vii a;
-const int N = (int)1e5 + 5;
-map<int, int> mem[N];
 
-int maxTrees(int tree, int leftSpace)
+ll OO = 1e18;
+
+const int MAXI = 2e5 + 5;
+vector<pair<ll, ll>> trees;
+ll dp[MAXI][4];
+ll n, t, h;
+ 
+ll maximum(ll idx = 0, ll type = 3, ll maxiX = -OO)
 {
-    if (tree == n) return 0;
-
-    if (mem[tree].count(leftSpace) > 0)
-        return mem[tree][leftSpace];
-
-    int &ret = mem[tree][leftSpace] = 0;
-
-    if(a[tree].X <= leftSpace) ret = -1;
-    else if (a[tree].X - a[tree].Y > leftSpace)
-    {
-        ret = max(1+maxTrees(tree + 1, a[tree].X + a[tree].Y), 1+maxTrees(tree + 1, a[tree].X));
-    }
-    else
-    {
-        ret = max(1 + maxTrees(tree + 1, a[tree].X + a[tree].Y),maxTrees(tree + 1, a[tree].X));
-    }
-    return ret;
+	if (idx == n) return 0;
+	
+	ll &ret = dp[idx][type];
+	if (~ret) return ret;
+	ret = 0;
+ 
+	ret = maximum(idx + 1, 0, trees[idx].X);
+ 
+	if (trees[idx].X - trees[idx].Y > maxiX) 
+		ret = max(ret, maximum(idx + 1, 1, trees[idx].X) + 1);
+ 
+	if (idx == n - 1 || trees[idx].X + trees[idx].Y < trees[idx + 1].X )
+		ret = max(ret, maximum(idx + 1, 2, trees[idx].X + trees[idx].Y) + 1);
+ 
+	return ret;
 }
-
-
-
+ 
 int main()
 {
-    //freopen("read.txt", "r", stdin);
-    //freopen("write.txt", "w", stdout);
-    IO;
-    cin >> n;
-    a.resize(n);
-    for (int i = 0; i < n; ++i)
-    {
-        cin >> a[i].X >> a[i].Y;
-    }
-    cout << maxTrees(0,INT_MIN) << "\n";
-    return 0;
+	IO;
+	cin >> n;
+	memset(dp, -1, sizeof dp);
+	
+	for (int i = 0; i < n; i++)
+		cin >> t >> h, trees.push_back({ t, h });
+ 
+	cout << maximum() << endl;
+	return 0;
 }

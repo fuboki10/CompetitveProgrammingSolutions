@@ -22,7 +22,7 @@ int32_t main(){
 			int y = __builtin_popcount(x);
 			if(mid >= y && mid <= x)
 			{
-				cout << ans;  return 0;
+				cout << mid;  return 0;
 			}
 		}
 		
